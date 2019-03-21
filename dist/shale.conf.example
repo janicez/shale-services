@@ -1,5 +1,7 @@
 /* This is an example configuration for Services.
  *
+ * David Franklin <dav@aspircd.com> Last Edited: aspIRCd Team <23/02/19>
+ *
  * All statements end in semi-colons (';').
  * Shell style, C style, and C++ style comments may be used.
  *
@@ -13,14 +15,14 @@
 /*
  * These are the modules included with the core distribution of Services.
  *
- * You may be interested in the shale community modules distribution as
+ * You may be interested in the atheme community modules distribution as 
  * well, which adds additional features that may or may not be compatible
  * with the project paradigms intended for maintainance of the core of
- * shale-services.
+ * atheme-services.
  *
- * Visit the shale-services website for more information and to download them.
+ * Visit the atheme-services website for more information and to download them.
  *
- * Modules marked [experimental] will taint your shale-services instance. Do
+ * Modules marked [experimental] will taint your atheme-services instance. Do
  * not file any bug reports with us about using Services with those modules;
  * they will be ignored.
  */
@@ -28,13 +30,13 @@
 /* Dynamic security modules.
  *
  * WARNING: If you select one of these modules, the default security policy included
- * with shale may break.  These modules are intended for people who know what they
+ * with Atheme may break.  These modules are intended for people who know what they
  * are doing and understand the implications of what they do.  Security modules which
  * are likely to break the default policy are prefixed with [!], if you are new to
- * shale, you should avoid enabling them.
+ * Atheme, you should avoid enabling them.
  *
  * If you find your security policy is broken, you may debug it while allowing normal
- * operation of your IRC network by putting shale into "permissive mode".  To do this,
+ * operation of your IRC network by putting Atheme into "permissive mode".  To do this,
  * enable general::permissive_mode.
  *
  * [!] Infer "command:" namespace permissions   modules/security/cmdperm
@@ -50,10 +52,11 @@
  * Asuka 1.2.1 or later                         modules/protocol/asuka
  * Bahamut 1.8.x                                modules/protocol/bahamut
  * Charybdis IRCd                               modules/protocol/charybdis
- * ChatIRCd 1.0 or later                        modules/protocol/chatircd
  * DreamForge 4.6.7 or later                    modules/protocol/dreamforge
  * Hybrid 7.1.2 and later                       modules/protocol/hybrid
+ * InspIRCd 1.2 [DEPRECATED]                    modules/protocol/inspircd
  * InspIRCd 2.0                                 modules/protocol/inspircd
+ * aspIRCd 5.0.1 or later                       modules/protocol/aspircd
  * ircd-ratbox 2.0 and later                    modules/protocol/ratbox
  * IRCNet ircd (ircd 2.11)                      modules/protocol/ircnet
  * ircd-seven                                   modules/protocol/ircd-seven
@@ -61,13 +64,14 @@
  * Nefarious IRCu 0.4.0 or later                modules/protocol/nefarious
  * ngIRCd 19 or later [experimental]            modules/protocol/ngircd
  * ShadowIRCd 5.0 or later                      modules/protocol/shadowircd
+ * SporksIRCd                                   modules/protocol/sporksircd
  * UnrealIRCd 3.2 or later                      modules/protocol/unreal
- * UnrealIRCd 4 or later                        modules/protocol/unreal4
  *
  * If your IRCd vendor has supplied a module file, build it and load it here
  * instead of one above.
  */
-#loadmodule "modules/protocol/inspircd";
+ * The default module to be loaded here is for aspIRCd , dont forget to uncomment the line below.
+#loadmodule "modules/protocol/aspircd";
 
 /* Protocol mixins.
  *
@@ -86,68 +90,48 @@
 #loadmodule "modules/protocol/mixin_noowner";
 
 /* Database backend module.
- *
+ * 
  * Please select a database backend module. Different backends allow for
  * different ways in which the services data can be manipulated. YOU MAY
  * ONLY HAVE ONE OF THESE BACKENDS LOADED.
- *
+ * 
  * The following backends are available:
- *
- * shale 0.1 flatfile database format          modules/backend/flatfile
+ * 
+ * Atheme 0.1 flatfile database format          modules/backend/flatfile
  * Open Services Exchange database format       modules/backend/opensex
- *
+ * 
  * Most networks will want opensex.
  */
 loadmodule "modules/backend/opensex";
 
-/* Password hashing modules.
+/* Crypto module.
  *
- * If you would like encryption for your services passwords, or to migrate
- * from another IRC services package which used encryption for its passwords,
- * please select a module here.
+ * If you would like encryption for your services passwords, please
+ * select a module here. Note that upon starting with a crypto module
+ * YOUR PASSWORDS ARE IMMEDIATELY AND IRREVERSIBLY CONVERTED. Make at
+ * least TWO backups of your database before experimenting with this.
+ * If you have several thousand accounts, this conversion may take
+ * appreciable time.
  *
- * The following encryption-capable crypto modules are available:
+ * The following crypto modules are available:
  *
- *   Argon2d (Password Hashing Competition, v1.3)  modules/crypto/argon2d
- *   PBKDF2 cryptography (better format)           modules/crypto/pbkdf2v2
- *   POSIX-style crypt(3)                          modules/crypto/posix
+ * PBKDF2 cryptography                          modules/crypto/pbkdf2
+ * POSIX-style crypt(3)                         modules/crypto/posix
+ * IRCServices (also Anope etc) compatibility   modules/crypto/ircservices
+ * Raw MD5 (Anope compatibility)                modules/crypto/rawmd5
+ * Raw SHA1 (Anope compatibility)               modules/crypto/rawsha1
  *
- * If you do not load an encryption-capable crypto module, some features will
- * not work correctly, and errors will be logged on e.g. user registration
- * that it was not possible to encrypt their password. Support for running
- * without an encryption-capable crypto module will be removed in a later
- * version of this software; for now it is just highly discouraged.
- *
- * Note that upon starting with an encryption-capable crypto module YOUR
- * PASSWORDS ARE IMMEDIATELY AND IRREVERSIBLY CONVERTED. Make at least TWO
- * backups of your database before experimenting with this. If you have
- * several thousand accounts, this conversion may take a long time.
- *
- * The following modules can only be used to /verify/ existing encrypted
- * passwords, for example when upgrading from an older version of this
- * software, or migrating from something else:
- *
- *   PBKDF2 (Atheme <= 7.2 compatibility)          modules/crypto/pbkdf2
- *   Raw MD5 (Anope ~1.8 compatibility)            modules/crypto/rawmd5
- *   Raw SHA1 (Anope ~1.8 compatibility)           modules/crypto/rawsha1
- *   IRCServices (+ Anope) compatibility           modules/crypto/ircservices
+ * The ircservices, rawmd5 and rawsha1 modules are only recommended for use with
+ * a database converted from other services with password encryption.
  *
  * To transition between crypto schemes, load the preferred scheme first
- * and as users login or set new passwords, they will be migrated to the new
- * preferred scheme. Like:
- *
- * loadmodule "modules/crypto/argon2d";
- * loadmodule "modules/crypto/pbkdf2v2";
+ * and as users login, they will be migrated to the new preferred scheme. Like:
  * loadmodule "modules/crypto/pbkdf2";
  * loadmodule "modules/crypto/posix";
+ * loadmodule "modules/crypto/ircservices";
  *
- * The posix module requires crypt(3) or OpenSSL.
- * The rawsha1 and pbkdf2/pbkdf2v2 modules require OpenSSL.
- * The Argon2d module has no dependencies and is recommended.
+ * The rawsha1 and pbkdf2 modules require OpenSSL.
  */
-loadmodule "modules/crypto/argon2d";
-#loadmodule "modules/crypto/pbkdf2v2";
-#loadmodule "modules/crypto/pbkdf2";
 loadmodule "modules/crypto/posix";
 
 /* Authentication module.
@@ -171,7 +155,7 @@ loadmodule "modules/crypto/posix";
  * Here you can disable or enable certain features of NickServ, by
  * defining which modules are loaded. You can even disable NickServ
  * entirely. Please note however, that an authentication service
- * (either NickServ, or UserServ) is required for proper functionality.
+ * (either NickServ, or UserServ) are required for proper functionality.
  *
  * The CrackLib password validation module requires CrackLib to be
  * installed on your system in order to use.
@@ -209,7 +193,6 @@ loadmodule "modules/crypto/posix";
  * Password retrieval allowed to normal users   modules/nickserv/sendpass_user
  * SET command core                             modules/nickserv/set_core
  * Change primary nickname (SET ACCOUNTNAME)    modules/nickserv/set_accountname
- * BLOCK SENDPASS except by IRCops (per acct)   modules/nickserv/set_blocksendpass
  * SET EMAIL command                            modules/nickserv/set_email
  * SET EMAILMEMOS command                       modules/nickserv/set_emailmemos
  * SET ENFORCETIME command                      modules/nickserv/set_enforcetime
@@ -224,9 +207,7 @@ loadmodule "modules/crypto/posix";
  * PRIVMSG instead of NOTICE (SET PRIVMSG cmd)  modules/nickserv/set_privmsg
  * Account info hiding (SET PRIVATE command)    modules/nickserv/set_private
  * SET PROPERTY command                         modules/nickserv/set_property
- * SET PUBKEY command                           modules/nickserv/set_pubkey
  * SET QUIETCHG command                         modules/nickserv/set_quietchg
- * SET QUIETPASS command                        moudles/nickserv/set_quietpass
  * Password retrieval uses code (SETPASS cmd)   modules/nickserv/setpass
  * STATUS command                               modules/nickserv/status
  * Nickname metadata viewer (TAXONOMY command)  modules/nickserv/taxonomy
@@ -268,7 +249,6 @@ loadmodule "modules/nickserv/setpass";
 loadmodule "modules/nickserv/sendpass_user";
 loadmodule "modules/nickserv/set_core";
 loadmodule "modules/nickserv/set_accountname";
-#loadmodule "modules/nickserv/set_blocksendpass";
 loadmodule "modules/nickserv/set_email";
 loadmodule "modules/nickserv/set_emailmemos";
 #loadmodule "modules/nickserv/set_enforcetime";
@@ -279,14 +259,11 @@ loadmodule "modules/nickserv/set_neverop";
 loadmodule "modules/nickserv/set_nogreet";
 loadmodule "modules/nickserv/set_nomemo";
 loadmodule "modules/nickserv/set_noop";
-#loadmodule "modules/nickserv/set_nopassword";
 loadmodule "modules/nickserv/set_password";
 #loadmodule "modules/nickserv/set_privmsg";
 #loadmodule "modules/nickserv/set_private";
 loadmodule "modules/nickserv/set_property";
-loadmodule "modules/nickserv/set_pubkey";
 loadmodule "modules/nickserv/set_quietchg";
-loadmodule "modules/nickserv/set_quietpass";
 loadmodule "modules/nickserv/status";
 loadmodule "modules/nickserv/taxonomy";
 loadmodule "modules/nickserv/vacation";
@@ -294,7 +271,7 @@ loadmodule "modules/nickserv/verify";
 loadmodule "modules/nickserv/vhost";
 
 /* ChanServ modules.
- *
+ * 
  * Here you can disable or enable certain features of ChanServ, by
  * defining which modules are loaded. You can even disable ChanServ
  * entirely. Please note that ChanServ requires an authentication
@@ -308,17 +285,14 @@ loadmodule "modules/nickserv/vhost";
  * CLOSE command                                modules/chanserv/close
  * CLONE command                                modules/chanserv/clone
  * CLEAR command                                modules/chanserv/clear
- * CLEAR AKICKS command                         modules/chanserv/clear_akicks
  * CLEAR BANS command                           modules/chanserv/clear_bans
  * CLEAR FLAGS command                          modules/chanserv/clear_flags
- * CLEAR OPS command                            modules/chanserv/clear_ops
  * CLEAR USERS command                          modules/chanserv/clear_users
  * COUNT command                                modules/chanserv/count
  * DROP command                                 modules/chanserv/drop
  * Forced flags changes                         modules/chanserv/fflags
  * FLAGS command                                modules/chanserv/flags
- * FREEZE command                               modules/chanserv/freeze
- * FSUSPEND command                             modules/chanserv/fsuspend
+ * FREEZE command				modules/chanserv/freeze
  * Forced foundership transfers                 modules/chanserv/ftransfer
  * GETKEY command                               modules/chanserv/getkey
  * HALFOP/DEHALFOP commands                     modules/chanserv/halfop
@@ -339,8 +313,8 @@ loadmodule "modules/nickserv/vhost";
  * OP/DEOP commands                             modules/chanserv/op
  * OWNER/DEOWNER commands                       modules/chanserv/owner
  * PROTECT/DEPROTECT commands                   modules/chanserv/protect
- * QUIET command (+y support) sIRCd only        modules/chanserv/syntaxquiet
  * QUIET command (+q support)                   modules/chanserv/quiet
+ * QUIET command (+y support) syntaxIRCd only   modules/chanserv/syntaxquiet
  * Channel takeover recovery (RECOVER command)  modules/chanserv/recover
  * REGISTER command                             modules/chanserv/register
  * SET command core                             modules/chanserv/set_core
@@ -357,14 +331,12 @@ loadmodule "modules/nickserv/vhost";
  * SET PREFIX command                           modules/chanserv/set_prefix
  * Channel info hiding (SET PRIVATE command)    modules/chanserv/set_private
  * SET PROPERTY command                         modules/chanserv/set_property
- * SET PUBACL command                           modules/chanserv/set_pubacl
  * SET RESTRICTED command                       modules/chanserv/set_restricted
  * SET SECURE command                           modules/chanserv/set_secure
  * SET TOPICLOCK command                        modules/chanserv/set_topiclock
  * SET URL command                              modules/chanserv/set_url
  * SET VERBOSE command                          modules/chanserv/set_verbose
  * STATUS command                               modules/chanserv/status
- * SUSPEND commands                             modules/chanserv/suspend
  * SYNC command (and automatic ACL syncing)     modules/chanserv/sync
  * Named Successor ACL flag                     modules/chanserv/successor_acl
  * Channel metadata viewer (TAXONOMY command)   modules/chanserv/taxonomy
@@ -388,17 +360,14 @@ loadmodule "modules/chanserv/ban";
 loadmodule "modules/chanserv/clone";
 loadmodule "modules/chanserv/close";
 loadmodule "modules/chanserv/clear";
-loadmodule "modules/chanserv/clear_akicks";
 loadmodule "modules/chanserv/clear_bans";
 loadmodule "modules/chanserv/clear_flags";
-loadmodule "modules/chanserv/clear_ops";
 loadmodule "modules/chanserv/clear_users";
 loadmodule "modules/chanserv/count";
 loadmodule "modules/chanserv/drop";
 #loadmodule "modules/chanserv/fflags";
 loadmodule "modules/chanserv/flags";
 loadmodule "modules/chanserv/freeze";
-#loadmodule "modules/chanserv/fsuspend"
 loadmodule "modules/chanserv/ftransfer";
 loadmodule "modules/chanserv/getkey";
 #loadmodule "modules/chanserv/halfop";
@@ -419,8 +388,8 @@ loadmodule "modules/chanserv/mark";
 loadmodule "modules/chanserv/op";
 #loadmodule "modules/chanserv/owner";
 #loadmodule "modules/chanserv/protect";
-#loadmodule "modules/chanserv/syntaxquiet";
 #loadmodule "modules/chanserv/quiet";
+#loadmodule "modules/chanserv/syntaxquiet";
 loadmodule "modules/chanserv/recover";
 loadmodule "modules/chanserv/register";
 loadmodule "modules/chanserv/set_core";
@@ -437,14 +406,12 @@ loadmodule "modules/chanserv/set_noop";
 loadmodule "modules/chanserv/set_prefix";
 #loadmodule "modules/chanserv/set_private";
 loadmodule "modules/chanserv/set_property";
-#loadmodule "modules/chanserv/set_pubacl";
 loadmodule "modules/chanserv/set_restricted";
 loadmodule "modules/chanserv/set_secure";
 loadmodule "modules/chanserv/set_topiclock";
 loadmodule "modules/chanserv/set_url";
 loadmodule "modules/chanserv/set_verbose";
 loadmodule "modules/chanserv/status";
-loadmodule "modules/chanserv/suspend";
 loadmodule "modules/chanserv/sync";
 #loadmodule "modules/chanserv/successor_acl";
 loadmodule "modules/chanserv/taxonomy";
@@ -487,7 +454,6 @@ loadmodule "modules/chanserv/antiflood";
  * MODLOAD command                              modules/operserv/modload
  * MODRELOAD command                            modules/operserv/modreload
  * MODUNLOAD command                            modules/operserv/modunload
- * NETLOG system                                modules/operserv/netlog
  * NOOP system                                  modules/operserv/noop
  * Override access (OVERRIDE command)           modules/operserv/override
  * Regex mass akill (RAKILL command)            modules/operserv/rakill
@@ -524,7 +490,6 @@ loadmodule "modules/operserv/modlist";
 loadmodule "modules/operserv/modload";
 loadmodule "modules/operserv/modunload";
 loadmodule "modules/operserv/modreload";
-#loadmodule "modules/operserv/netlog";
 loadmodule "modules/operserv/noop";
 #loadmodule "modules/operserv/override";
 #loadmodule "modules/operserv/rakill";
@@ -593,18 +558,17 @@ loadmodule "modules/infoserv/main";
  *
  * Core components                              modules/saslserv/main
  * PLAIN mechanism                              modules/saslserv/plain
- * ECDSA-NIST256p-CHALLENGE                     modules/saslserv/ecdsa-nist256p-challenge
+  * ECDSA-NIST256p-CHALLENGE                     modules/saslserv/ecdsa-nist256p-challenge
  * AUTHCOOKIE mechanism (for IRIS)              modules/saslserv/authcookie
  * EXTERNAL mechanism (IRCv3.1+)                modules/saslserv/external
  *
- * ECDSA-NIST256p-CHALLENGE support requires that shale be compiled against OpenSSL.
+ * ECDSA-NIST256p-CHALLENGE support requires that Atheme be compiled against OpenSSL.
  */
 loadmodule "modules/saslserv/main";
 loadmodule "modules/saslserv/plain";
 loadmodule "modules/saslserv/authcookie";
 #loadmodule "modules/saslserv/external";
 #loadmodule "modules/saslserv/ecdsa-nist256p-challenge"; /* requires SSL */
-
 /* GameServ modules.
  *
  * Here you can disable or enable certain features of GameServ, by
@@ -620,14 +584,14 @@ loadmodule "modules/saslserv/authcookie";
  * NAMEGEN command                              modules/gameserv/namegen
  * RPS command                                  modules/gameserv/rps
  */
-#loadmodule "modules/gameserv/main";
-#loadmodule "modules/gameserv/dice";
-#loadmodule "modules/gameserv/eightball";
-#loadmodule "modules/gameserv/gamecalc";
-#loadmodule "modules/gameserv/help";
-#loadmodule "modules/gameserv/lottery";
-#loadmodule "modules/gameserv/namegen";
-#loadmodule "modules/gameserv/rps";
+loadmodule "modules/gameserv/main";
+loadmodule "modules/gameserv/dice";
+loadmodule "modules/gameserv/eightball";
+loadmodule "modules/gameserv/gamecalc";
+loadmodule "modules/gameserv/help";
+loadmodule "modules/gameserv/lottery";
+loadmodule "modules/gameserv/namegen";
+loadmodule "modules/gameserv/rps";
 
 /* RPGServ modules.
  *
@@ -643,13 +607,13 @@ loadmodule "modules/saslserv/authcookie";
  * SEARCH command                               modules/rpgserv/search
  * SET commands                                 modules/rpgserv/set
  */
-#loadmodule "modules/rpgserv/main";
-#loadmodule "modules/rpgserv/enable";
-#loadmodule "modules/rpgserv/help";
-#loadmodule "modules/rpgserv/info";
-#loadmodule "modules/rpgserv/list";
-#loadmodule "modules/rpgserv/search";
-#loadmodule "modules/rpgserv/set";
+loadmodule "modules/rpgserv/main";
+loadmodule "modules/rpgserv/enable";
+loadmodule "modules/rpgserv/help";
+loadmodule "modules/rpgserv/info";
+loadmodule "modules/rpgserv/list";
+loadmodule "modules/rpgserv/search";
+loadmodule "modules/rpgserv/set";
 
 /* BotServ modules.
  *
@@ -665,17 +629,14 @@ loadmodule "modules/saslserv/authcookie";
  * SET FANTASY command                          modules/botserv/set_fantasy
  * SET NOBOT command                            modules/botserv/set_nobot
  * SET PRIVATE command                          modules/botserv/set_private
- * SET SAYCALLER command                        modules/botserv/set_saycaller
  */
-#loadmodule "modules/botserv/main";
-#loadmodule "modules/botserv/help";
-#loadmodule "modules/botserv/info";
-#loadmodule "modules/botserv/bottalk";
-#loadmodule "modules/botserv/set_core";
-#loadmodule "modules/botserv/set_fantasy";
-#loadmodule "modules/botserv/set_nobot";
-#loadmodule "modules/botserv/set_private";
-#loadmodule "modules/botserv/set_saycaller";
+loadmodule "modules/botserv/main";
+loadmodule "modules/botserv/help";
+loadmodule "modules/botserv/info";
+loadmodule "modules/botserv/bottalk";
+loadmodule "modules/botserv/set_core";oadmodule "modules/botserv/set_fantasy";
+loadmodule "modules/botserv/set_nobot";
+loadmodule "modules/botserv/set_private";
 
 /* HostServ modules.
  *
@@ -697,15 +658,15 @@ loadmodule "modules/saslserv/authcookie";
  * GROUP command                                modules/hostserv/group
  * DROP command                                 modules/hostserv/drop
  */
-#loadmodule "modules/hostserv/main";
-#loadmodule "modules/hostserv/help";
-#loadmodule "modules/hostserv/onoff";
-#loadmodule "modules/hostserv/offer";
-#loadmodule "modules/hostserv/request";
-#loadmodule "modules/hostserv/vhost";
-#loadmodule "modules/hostserv/vhostnick";
-#loadmodule "modules/hostserv/group";
-#loadmodule "modules/hostserv/drop";
+loadmodule "modules/hostserv/main";
+loadmodule "modules/hostserv/help";
+loadmodule "modules/hostserv/onoff";
+loadmodule "modules/hostserv/offer";
+loadmodule "modules/hostserv/request";
+loadmodule "modules/hostserv/vhost";
+loadmodule "modules/hostserv/vhostnick";
+loadmodule "modules/hostserv/group";
+loadmodule "modules/hostserv/drop";
 
 /* HelpServ modules.
  * HelpServ allows users to request help from network staff in a few different ways.
@@ -718,10 +679,10 @@ loadmodule "modules/saslserv/authcookie";
  * The ticket system works like a bugtracker ot helpdesk ticket system, HELPME
  * works like a one-time alert. You should probably only load one of the two systems.
  */
-#loadmodule "modules/helpserv/main";
-#loadmodule "modules/helpserv/helpme";
-#loadmodule "modules/helpserv/ticket";
-#loadmodule "modules/helpserv/services";
+loadmodule "modules/helpserv/main";
+loadmodule "modules/helpserv/helpme";
+loadmodule "modules/helpserv/ticket";
+loadmodule "modules/helpserv/services";
 
 /* Channel listing service.
  *
@@ -730,7 +691,7 @@ loadmodule "modules/saslserv/authcookie";
  *
  * Core components                              modules/alis/main
  */
-#loadmodule "modules/alis/main";
+loadmodule "modules/alis/main";
 
 /* StatServ module.
  * StatServ provides basic statistics and split tracking.
@@ -741,7 +702,7 @@ loadmodule "modules/saslserv/authcookie";
  * SERVER command                               modules/statserv/server
  */
 loadmodule "modules/statserv/main";
-#loadmodule "modules/statserv/channel";
+loadmodule "modules/statserv/channel";
 loadmodule "modules/statserv/netsplit";
 loadmodule "modules/statserv/server";
 
@@ -767,7 +728,6 @@ loadmodule "modules/statserv/server";
  * SET CHANNEL command                          modules/groupserv/set_channel
  * SET DESCRIPTION command                      modules/groupserv/set_description
  * SET EMAIL command                            modules/groupserv/set_email
- * SET GROUPNAME command                        modules/groupserv/set_groupname
  * SET JOINFLAGS command                        modules/groupserv/set_joinflags
  * SET OPEN command                             modules/groupserv/set_open
  * SET PUBLIC command                           modules/groupserv/set_public
@@ -792,7 +752,6 @@ loadmodule "modules/groupserv/set";
 loadmodule "modules/groupserv/set_channel";
 loadmodule "modules/groupserv/set_description";
 loadmodule "modules/groupserv/set_email";
-loadmodule "modules/groupserv/set_groupname";
 loadmodule "modules/groupserv/set_joinflags";
 loadmodule "modules/groupserv/set_open";
 loadmodule "modules/groupserv/set_public";
@@ -801,7 +760,7 @@ loadmodule "modules/groupserv/set_url";
 /*
  * Various modules.
  *
- * shale includes an optional HTTP server that can be used for integration
+ * Atheme includes an optional HTTP server that can be used for integration
  * with portal software and other useful things. To enable it, load this
  * module, and uncomment the httpd { } block towards the bottom of the config.
  *
@@ -810,7 +769,7 @@ loadmodule "modules/groupserv/set_url";
 loadmodule "modules/misc/httpd";
 
 /* XMLRPC server module.
- *
+ * 
  * The XML-RPC handler requires modules/misc/httpd to be loaded as it merely
  * registers a path handler for XML-RPC. The path used for XML-RPC is /xmlrpc.
  *
@@ -820,7 +779,7 @@ loadmodule "modules/transport/xmlrpc";
 
 /* Extended target entity types. [EXPERIMENTAL]
  *
- * shale can set up special target mapping entities which match multiple
+ * Atheme can set up special target mapping entities which match multiple
  * users in channel access entries.  These target mapping entity types are
  * defined through the 'exttarget' modules listed below.
  *
@@ -829,29 +788,17 @@ loadmodule "modules/transport/xmlrpc";
  * $registered exttarget match type             modules/exttarget/registered
  * $channel exttarget match type                modules/exttarget/channel
  * $chanacs exttarget match type                modules/exttarget/chanacs
- * $server exttarget match type                 modules/exttarget/server
  */
 #loadmodule "modules/exttarget/main";
 #loadmodule "modules/exttarget/oper";
 #loadmodule "modules/exttarget/registered";
 #loadmodule "modules/exttarget/channel";
 #loadmodule "modules/exttarget/chanacs";
-#loadmodule "modules/exttarget/server";
-
-/* Proxyscan (DNSBL) modules.
- *
- * shale can also check set DNS Blacklists for matches and respond
- * as set.  Activate modules here and customize further down under Proxyscan
- * section.
- */
-#loadmodule "modules/proxyscan/main";
-#loadmodule "modules/proxyscan/help";
-#loadmodule "modules/proxyscan/dnsbl";
 
 /* Other modules.
  *
  * Put any other modules you want to load on startup here. The path
- * is relative to PREFIX or PREFIX/lib/shale, depending on how shale
+ * is relative to PREFIX or PREFIX/lib/atheme, depending on how Atheme
  * was compiled.
  */
 #loadmodule "modules/contrib/ns_listlogins";
@@ -859,49 +806,6 @@ loadmodule "modules/transport/xmlrpc";
 /******************************************************************************
  * SERVICES RUNTIME CONFIGURATION SECTION.                                    *
  ******************************************************************************/
-
-/*
- * If you are using modules/crypto/argon2d, you may wish to edit this
- * block. It is recommended to either leave the values at their defaults,
- * or experiment with them so that it takes approximately 0.5-1.0 seconds
- * for users to identify. Services blocks while the digest is being
- * computed or verified, so don't set these too large, or people can hang
- * services by trying many password attempts at once.
- */
-argon2d {
-
-	/* memory cost (as a power of 2, in KiB)
-	 * Valid values are 8 (256 KiB) to 20 (1 GiB) (inclusive)
-	 * The default is 14
-	 */
-	#memory = 14;      /* 2^14 KiB == 16384 KiB (16 MiB) */
-
-	/* time cost (iterations over the memory)
-	 * Valid values are 4 to 16384 (inclusive)
-	 * The default is 32
-	 */
-	#time = 32;
-};
-
-/*
- * If you are using modules/crypto/pbkdf2v2, you may wish to edit this
- * block. See the comment on the argon2d {} block above for advice
- * regarding parameter choice that also applies here.
- */
-pbkdf2v2 {
-
-	/* digest
-	 * Valid values are "SHA1", "SHA256" and "SHA512"
-	 * The default is "SHA512"
-	 */
-	#digest = "SHA512";
-
-	/* rounds
-	 * Valid values are 10,000 to 5,000,000 (inclusive)
-	 * The default is 64,000
-	 */
-	#rounds = 64000;
-};
 
 /* The serverinfo{} block defines how we appear on the IRC network. */
 serverinfo {
@@ -916,12 +820,12 @@ serverinfo {
 	/* desc
 	 * The ``server comment'' we send to the IRC network.
 	 */
-	desc = "Shale IRC Services";
+	desc = "Ashtheme IRC Services";
 
 	/* numeric
 	 * Some protocol drivers (Charybdis, Ratbox2, Hybrid, P10, IRCNet)
 	 * require a server id, also known as a numeric. Please consult your
-	 * ircd's documentation when providing this value.
+	 * ircd's documentation when providing this value. 
 	 */
 	numeric = "00A";
 
@@ -959,10 +863,10 @@ serverinfo {
 	registeremail = "noreply@admin.tld";
 
 	/* (*)hidden
-	 * If this is enabled, shale will indicate to the uplink IRCd
+	 * If this is enabled, Atheme will indicate to the uplink IRCd
 	 * that it should not be included in /links output.  This only works
 	 * on the following IRCds at present: charybdis, hybrid, ircd-seven,
-	 * ratbox, shadowircd.
+	 * ratbox, shadowircd, sporksircd.
 	 */
 	#hidden;
 
@@ -977,12 +881,12 @@ serverinfo {
 
 	/* (*)loglevel
 	 * Specify the default categories of logging information to record
-	 * in the master shale logfile, usually var/shale.log.
+	 * in the master Atheme logfile, usually var/atheme.log.
 	 *
 	 * Options include:
 	 *      debug, all      - meta-keyword for all possible categories
 	 *      trace           - meta-keyword for a little bit of info
-	 *      misc            - like trace, but with some more miscellaneous info
+	 *      misc            - like trace, but with some more miscillaneous info
 	 *      notice          - meta-keyword for notice-like information
 	 * ------------------------------------------------------------------------------
 	 *      error           - critical errors
@@ -993,7 +897,6 @@ serverinfo {
 	 *      register        - account and channel registrations
 	 *      set             - changes of account or channel settings
 	 *      request         - user requests (currently only vhosts)
-	 *      netlog          - connects/disconnects, joins/parts, topic changes
 	 *      network         - log notices related to network status
 	 *      rawdata         - log raw data sent and received by services
 	 *      wallops         - <not yet used>
@@ -1027,7 +930,7 @@ serverinfo {
 
 	/* (*)auth
 	 * What type of username registration authorization do you want?
-	 * If "email", shale will send a confirmation email to the address to
+	 * If "email", Atheme will send a confirmation email to the address to
 	 * ensure it's valid. If registration is not completed within one day,
 	 * the username will expire. If "none", no message will be sent and
 	 * the username will be fully registered.
@@ -1046,8 +949,8 @@ serverinfo {
 
 /* uplink{} blocks define connections to IRC servers.
  * Multiple may be defined but only one will be used at a time (IRC
- * being a tree shaped network). shale does not currently link over SSL.
- * To link shale over ssl, please connect shale to a local ircd and have that
+ * being a tree shaped network). Atheme does not currently link over SSL.
+ * To link Atheme over ssl, please connect Atheme to a local ircd and have that
  * connect to your network over SSL.
  */
 uplink "irc.example.net" {
@@ -1118,7 +1021,7 @@ nickserv {
 	#no_nick_ownership;
 
 	/* (*)nick
-	 * The nickname we want NickServ to have.
+	 * The nickname we want NickServ to have. 
 	 */
 	nick = "NickServ";
 
@@ -1176,7 +1079,7 @@ nickserv {
 	 * on nicks.
 	 */
 	#enforce_delay = 30;
-
+	
 	/* (*)enforce_prefix
 	 * The prefix to use when changing the user's nick on enforcement
 	 */
@@ -1190,8 +1093,8 @@ nickserv {
 	#cracklib_dict = "/var/cache/cracklib/cracklib_dict";
 
 	/* (*)cracklib_warn
-	 * If this option is set and nickserv/cracklib is loaded, nickserv will just
-	 * warn users that their password is insecure, recommend they change it and
+	 * If this option is set and nickserv/cracklib is loaded, nickserv will just 
+	 * warn users that their password is insecure, recommend they change it and 
 	 * still register the nick. If this option is unset, it will refuse to
 	 * register the nick at all until the user chooses a better password.
 	 */
@@ -1234,20 +1137,12 @@ chanserv {
 	 */
 	real = "Channel Services";
 
-	/* reggroup
-	 * The group that will receive Memos about
-	 * channel Registration requests when
-	 * chanserv/moderate is loaded.
-	 * NOTE: Requires GroupServ to be loaded
-	 */
-	#reggroup = "!ServicesTeam-ChannelAdmins";
-
 	/* (*)aliases
 	 * Command aliases for ChanServ.
 	 */
 	aliases {
 	};
-
+	
 	/* (*)access
 	 * Command access changes for ChanServ.
 	 */
@@ -1266,17 +1161,6 @@ chanserv {
 	 */
 	fantasy;
 
-  /* verifiedaccess
-   * Do you want to allow un-verified users to get flags
-   * or access on channels?  You can uncomment this to ensure
-   * that only verified users are able to get channel access.
-   * (Un-verified accounts expire within 24 hours of registration
-   * when 'auth' is set to email anyway.)  This also encourages
-   * your users to complete verification and use valid email
-   * addresses.
-   */
-   #verifiedaccess;
-
 	/* (*) hide_xop
 	 * Hide the XOP templates from sight.  This is useful if you
 	 * want to use templates and not have the XOP templates displayed.
@@ -1291,9 +1175,9 @@ chanserv {
 	 * except that hop may be equal to vop to disable hop.
 	 * Each subsequent level should have more flags (except +VHO).
 	 * For optimal functioning of /cs forcexop, aop should not have
-	 * any of +sRf, hop should not have any of +sRfoOr and vop should
+	 * any of +sRf, hop should not have any of +sRfoOr and vop should 
 	 * not have any of +sRfoOrhHt.
-	 * If this is not specified, the values of shale 0.3 are used,
+	 * If this is not specified, the values of Atheme 0.3 are used,
 	 * which are generally less intuitive than these.
 	 * Note: changing these leaves the flags of existing channel access
 	 * entries unchanged, thus removing them of the view of /cs xop list.
@@ -1307,11 +1191,11 @@ chanserv {
 	 */
 	templates {
 		vop = "+AV";
-		hop = "+AHehitrv";
-		aop = "+AOehiortv";
-		sop = "+AOaefhiorstv";
+		hop = "+AHhitrv";
+		aop = "+AOhiortv";
+		sop = "+AOafhiorstv";
 
-		founder = "+AFORaefhioqrstv";
+		founder = "+AFORafhiorstv";
 
 		/* some examples (which are commented out...) */
 		#member = "+Ai";
@@ -1373,9 +1257,9 @@ chanserv {
 	/* (*)founder_flags
 	 * The flags a user will get when they register a new channel.
 	 * This MUST include at least 'F' or it will be ignored.
-	 * If it is not set, shale will give the user all channel flags.
+	 * If it is not set, Atheme will give the user all channel flags.
 	 */
-	#founder_flags = "AFORefiorstv";
+	#founder_flags = "AFORfiorstv";
 
 	/* (*)akick_time
 	 * The default expiration time (in minutes) for AKICKs.
@@ -1383,13 +1267,6 @@ chanserv {
 	 * by default (the old behaviour).
 	 */
 	#akick_time = 10;
-
-	/* (*)suspend_time
-	 * The default expiration time (in minutes) for SUSPEND ADDs.
-	 * Comment this option out or set to zero for permanent SUSPENDs
-	 * by default (the old behaviour).
-	 */
-	#suspend_time = 10;
 
 	/* (*)antiflood_enforce_method
 	 * The enforcement method to use for flood protection by default.
@@ -1532,7 +1409,7 @@ operserv {
 	 */
 	aliases {
 	};
-
+	
 	/* (*)access
 	 * Command access changes for OperServ.
 	 */
@@ -1567,11 +1444,6 @@ saslserv {
 	 * The realname (gecos) information we want SaslServ to have.
 	 */
 	real = "SASL Authentication Agent";
-
-	/* (*)hide_server_names
-	 * Hide server names in the bad_password message.
-	 */
-	#hide_server_names;
 };
 
 /* MemoServ configuration.
@@ -1607,7 +1479,7 @@ memoserv {
 	 */
 	aliases {
 	};
-
+	
 	/* (*)access
 	 * Command access changes for MemoServ.
 	 */
@@ -1618,12 +1490,6 @@ memoserv {
 	 * What is the maximum amount of memos a user can have in their inbox?
 	 */
 	maxmemos = 30;
-
-  /* (*)helpgroup
-   * If using GroupServ and MemoServ, which group should be notified of
-   * NEW HelpServ requests?
-   */
-   helpgroup = "!Network-Staff";
 };
 
 /* GameServ configuration.
@@ -1658,7 +1524,7 @@ gameserv {
 	 */
 	aliases {
 	};
-
+	
 	/* (*)access
 	 * Command access changes for GameServ.
 	 */
@@ -1698,7 +1564,7 @@ rpgserv {
 	 */
 	aliases {
 	};
-
+	
 	/* (*)access
 	 * Command access changes for RPGServ.
 	 */
@@ -1773,7 +1639,7 @@ groupserv {
 	 */
 	aliases {
 	};
-
+	
 	/* (*)access
 	 * Command access changes for GroupServ.
 	 */
@@ -1833,13 +1699,6 @@ hostserv {
 	 */
 	real = "Host Management Services";
 
-	/* reggroup
-	 * The group that will receive Memos about
-	 * vHost requests.
-	 * NOTE: Requires GroupServ to be loaded
-	 */
-	#reggroup = "!ServicesTeam-vHostAdmins";
-
 	/* (*)request_per_nick
 	 * Whether the request system should work per nick or per account.
 	 * The recommended setting is to leave this disabled, so that
@@ -1854,7 +1713,7 @@ hostserv {
 		"APPROVE" = "ACTIVATE";
 		"DENY" = "REJECT";
 	};
-
+	
 	/* (*)access
 	 * Command access changes for HostServ.
 	 */
@@ -1959,7 +1818,7 @@ httpd {
 	host = "0.0.0.0";
 
 	/* host (ipv6)
-	 * If you want, you can have shale listen on an IPv6 host too.
+	 * If you want, you can have Atheme listen on an IPv6 host too.
 	 * Use :: if you want to listen on all available IPv6 hosts.
 	 */
 	#host = "::";
@@ -2018,7 +1877,6 @@ ldap {
  *      register        - account and channel registrations
  *      set             - changes of account or channel settings
  *      request         - user requests (currently only vhosts)
- *      netlog          - connects/disconnects, joins/parts and topic changes
  *      network         - log notices related to network status
  *      rawdata         - log raw data sent and received by services
  *      wallops         - <not yet used>
@@ -2076,7 +1934,7 @@ general {
 	 * Network webpage for services help. Shown to users when they
 	 * request help for a command that doesn't exist.
 	 */
-	#helpurl = "https://github.com/ShaleCoding/shale-services/wiki/";
+	#helpurl = "http://www.stack.nl/~jilles/irc/atheme-help/";
 
 	/* (*)silent
 	 * If you want to prevent services from sending
@@ -2104,12 +1962,12 @@ general {
 	 * If you use ircu-like ircd (asuka, bircd, undernet), you must
 	 * leave this enabled, and put guard in default cflags.
 	 *
-	 * For ratbox it is recommended to leave it on and put guard in
+	 * For ratbox it is recommended to leave it on and put guard in 
 	 * default cflags, in order that ChanServ does not have to join/part
 	 * to do certain things. On the other hand, enabling this increases
 	 * potential for bots fighting with ChanServ.
 	 *
-	 * Regardless of this option, ChanServ will temporarily join
+	 * Regardless of this option, ChanServ will temporarily join 
 	 * channels which would otherwise be empty if necessary to enforce
 	 * akick/restricted/close, and to change the TS if changets is
 	 * enabled.
@@ -2134,14 +1992,14 @@ general {
 	/* (*)uflags
 	 * The default flags to set for usernames upon registration.
 	 * Valid values are: hold, neverop, noop, hidemail, nomemo, emailmemos,
-	 * enforce, privmsg, private, quietchg, quietpass and none.
+	 * enforce, privmsg, private, quietchg and none.
 	 */
 	uflags = { hidemail; };
 
 	/* (*)cflags
 	 * The default flags to set for channels upon registration.
 	 * Valid values are: hold, secure, verbose, verbose_ops, keeptopic,
-	 * topiclock, guard, private, nosync, limitflags, pubacl and none.
+	 * topiclock, guard, private, nosync, limitflags and none.
 	 */
 	cflags = { verbose; guard; };
 
@@ -2176,7 +2034,7 @@ general {
 	 * After `ratelimit_uses' of a command within `ratelimit_period', users
 	 * will not be able to run that ratelimited command until the period is up.
 	 * Comment this, ratelimit_period below or both options out to disable rate limiting.
-	 * Currently used in helpserv/helpme, helpserv/ticket, hostserv/request,
+	 * Currently used in helpserv/helpme, helpserv/ticket, hostserv/request, 
 	 * nickserv/register and chanserv/register.
 	 */
 	ratelimit_uses = 5;
@@ -2186,34 +2044,34 @@ general {
 	 * After `ratelimit_uses' of a command within `ratelimit_period', users
 	 * will not be able to run that ratelimited command until the period is up.
 	 * Comment this, ratelimit_uses above or both options out to disable rate limiting.
-	 * Currently used in helpserv/helpme, helpserv/ticket, hostserv/request,
+	 * Currently used in helpserv/helpme, helpserv/ticket, hostserv/request, 
 	 * nickserv/register and chanserv/register.
 	 */
 	ratelimit_period = 60;
 
-	/* (*)vhost_change
+        /* (*)vhost_change
 	 * The default number of days between vHost changes once a user has used HostServ
 	 * TAKE or REQUEST.  (Helps to deter rabid host-swappers and ban evaders.)
 	 */
 	#vhost_change = 30;
 
-	/* (*)akill_time
-	 * The default expire time for AKILL's in days.
-	 * Setting this to 0 makes all AKILL's permanent.
+	/* (*)kline_time
+	 * The default expire time for KLINE's in days.
+	 * Setting this to 0 makes all KLINE's permanent.
 	 */
-	akill_time = 7;
+	kline_time = 7;
 
-	/* (*)akill_with_ident
-	 * AKILL user@host instead of *@host.
-	 * Applies to all automatic AKILL's set by services.
+	/* (*)kline_with_ident
+	 * KLINE user@host instead of *@host.
+	 * Applies to all automatic KLINE's set by services.
 	 */
-	#akill_with_ident;
+	#kline_with_ident;
 
-	/* (*)akill_verified_ident
-	 * AKILL *@host if the first character of the ident is ~,
-	 * irrespective of the value of akill_with_ident.
+	/* (*)kline_verified_ident
+	 * KLINE *@host if the first character of the ident is ~,
+	 * irrespective of the value of kline_with_ident.
 	 * /
-	#akill_verified_ident;
+	#kline_verified_ident
 
 	/* (*)clone_time
 	 * This is the default expiry time for CLONE exemptions in minutes.
@@ -2227,7 +2085,7 @@ general {
 	commit_interval = 5;
 
 	/* (*)default_clone_allowed
-	 * The limit after which clones will be KILLed or AKILLed.
+	 * The limit after which clones will be KILLed or TKLINEd.
 	 * Used by operserv/clones.
 	 */
 	default_clone_allowed = 5;
@@ -2249,7 +2107,7 @@ general {
 	/* (*)uplink_sendq_limit
 	 * The maximum amount of data that may be queued to be sent
 	 * to the uplink, in bytes. This should be enough to contain
-	 * shale's response to the netburst, but smaller than the
+	 * Atheme's response to the netburst, but smaller than the
 	 * IRCd's sendq limit for servers.
 	 */
 	uplink_sendq_limit = 1048576;
@@ -2268,7 +2126,7 @@ general {
 	};
 
 	/* allow_taint
-	 * By enabling this option, shale will run in configurations where
+	 * By enabling this option, Atheme will run in configurations where
 	 * the upstream will not provide support.  By enabling this feature,
 	 * you void any perceived rights to support.
 	 */
@@ -2282,41 +2140,9 @@ general {
 	 *    immune - require whatever ircd usermode is needed for kick
 	 *             immunity (this is the default);
 	 *    admin  - require admin privileges for kick immunity
-	 *    ircop  - require any ircop privileges for kick immunity (umode +o)
+	 *    ircop  - require any ircop privileges for kick immunity (umode +o) 
 	 */
 	immune_level = immune;
-
-	/* show_entity_id
-	 * This makes nick/user & group entity IDs visible to everyone, rather
-	 * than just opers with user:auspex or group:auspex privileges.
-	 */
-	show_entity_id;
-};
-
-proxyscan {
-	/* Here you can configure the details of your Proxyscan (DNS Blacklist)
-	 * scanner service.
-	 */
-
-	nick = "Proxyscan";
-	user = "dnsbl";
-	host = "services.int";
-	real = "DNSBL Proxyscan Service";
-
-	blacklists {
-	 "dnsbl.dronebl.org";
-	 "rbl.efnetrbl.org";
-	 "tor.efnet.org";
-	};
-
-	/* Available dnsbl_action's:
-	 * NONE - Do nothing
-	 * NOTIFY - Notify user that they are listed in a DNSBL and which one
-	 * SNOOP - Report the user to the logchannel or services channel
-	 * AKILL - AKILL the user from the network (uses default AKILL time)
-	 */
-
-	dnsbl_action = akill;
 };
 
 /******************************************************************************
@@ -2326,7 +2152,7 @@ proxyscan {
 /* Operator configuration
  * See the PRIVILEGES document for more information.
  * NOTE: All changes apply immediately upon rehash. You may need
- * to send a signal (killall -HUP shale-services) to regain control.
+ * to send a signal (killall -HUP atheme-services) to regain control.
  */
 /* (*) Operclasses specify groups of services operator privileges */
 /* The "user" operclass specifies privileges all users get.
@@ -2378,13 +2204,6 @@ operclass "ircop" {
 		group:auspex;
 		group:admin;
 	};
-
-	/* needoper
-	 * Only grant privileges to IRC users in this oper class if they
-	 * are opered; other use of privilege (channel succession, XMLRPC,
-	 * etc.) is unaffected by this.  It can also optionally be removed.
-	 */
-	needoper;
 };
 
 operclass "sra" {
@@ -2412,7 +2231,7 @@ operclass "sra" {
 	/* needoper
 	 * Only grant privileges to IRC users in this oper class if they
 	 * are opered; other use of privilege (channel succession, XMLRPC,
-	 * etc.) is unaffected by this.  It can also optionally be removed.
+	 * etc.) is unaffected by this.
 	 */
 	needoper;
 };
@@ -2421,7 +2240,7 @@ operclass "sra" {
 /* (*) Operator blocks specify accounts with certain privileges
  * Oper classes must be defined before they are used in operator blocks.
  */
-operator "siniStar" {
+operator "jilles" {
 	/* operclass */
 	operclass = "sra";
 	/* password

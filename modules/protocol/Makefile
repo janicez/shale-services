@@ -23,6 +23,7 @@ SRCS = \
 	mixin_nohalfops.c	\
 	mixin_noholdnick.c	\
 	mixin_noowner.c	\
+        aspircd.c       \
 	mixin_noprotect.c	\
 	nefarious.c	\
 	ngircd.c	\
