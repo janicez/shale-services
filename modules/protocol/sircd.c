@@ -4,21 +4,21 @@
  * Copyright (c) 2005-2007 Atheme Development Group
  * Rights to this code are documented in doc/LICENSE.
  *
- * This file contains protocol support for sircd, a charybdis fork.
+ * This file contains protocol support for aspircd, a charybdis fork.
  * Adapted from the Charybdis protocol module.
  */
 
 #include "atheme.h"
 #include "uplink.h"
 #include "pmodule.h"
-#include "protocol/sircd.h"
+#include "protocol/aspircd.h"
 
-DECLARE_MODULE_V1("protocol/sircd", true, _modinit, NULL, PACKAGE_STRING, "ShaleCoding IRC Network Development Team <http://shale.chatfreedom.us>");
+DECLARE_MODULE_V1("protocol/aspircd", true, _modinit, NULL, PACKAGE_STRING, "ShaleCoding IRC Network Development Team <http://shale.chatfreedom.us>");
 
 /* *INDENT-OFF* */
 
-ircd_t sircd = {
-        "sIRCd",			/* IRCd name */
+ircd_t aspircd = {
+        "aspircd",			/* IRCd name */
         "$$",                           /* TLD Prefix, used by Global. */
         true,                           /* Whether or not we use IRCNet/TS6 UID */
         false,                          /* Whether or not we use RCOMMAND */
@@ -34,7 +34,7 @@ ircd_t sircd = {
         "+q",                            /* Mode we set for owner. */
         "+a",                            /* Mode we set for protect. */
         "+h",                            /* Mode we set for halfops. */
-	PROTOCOL_SIRCD,		        /* Protocol type */
+	PROTOCOL_aspircd,		        /* Protocol type */
 	CMODE_PERM,                     /* Permanent cmodes */
 	0,                              /* Oper-immune cmode */
 	"beIq",                         /* Ban-like cmodes */
@@ -43,7 +43,7 @@ ircd_t sircd = {
 	IRCD_CIDR_BANS | IRCD_HOLDNICK, /* Flags */
 };
 
-struct cmode_ sircd_mode_list[] = {
+struct cmode_ aspircd_mode_list[] = {
   { 'i', CMODE_INVITE },
   { 'm', CMODE_MOD    },
   { 'n', CMODE_NOEXT  },
@@ -77,13 +77,13 @@ struct cmode_ sircd_mode_list[] = {
 static bool check_forward(const char *, channel_t *, mychan_t *, user_t *, myuser_t *);
 static bool check_jointhrottle(const char *, channel_t *, mychan_t *, user_t *, myuser_t *);
 
-struct extmode sircd_ignore_mode_list[] = {
+struct extmode aspircd_ignore_mode_list[] = {
   { 'f', check_forward },
   { 'j', check_jointhrottle },
   { '\0', 0 }
 };
 
-struct cmode_ sircd_status_mode_list[] = {
+struct cmode_ aspircd_status_mode_list[] = {
   { 'q', CSTATUS_OWNER },
   { 'a', CSTATUS_PROTECT },
   { 'o', CSTATUS_OP    },
@@ -92,7 +92,7 @@ struct cmode_ sircd_status_mode_list[] = {
   { '\0', 0 }
 };
 
-struct cmode_ sircd_prefix_mode_list[] = {
+struct cmode_ aspircd_prefix_mode_list[] = {
   { '~', CSTATUS_OWNER },
   { '&', CSTATUS_PROTECT },
   { '@', CSTATUS_OP    },
@@ -101,7 +101,7 @@ struct cmode_ sircd_prefix_mode_list[] = {
   { '\0', 0 }
 };
 
-struct cmode_ sircd_user_mode_list[] = {
+struct cmode_ aspircd_user_mode_list[] = {
   { 'p', UF_IMMUNE   },
   { 'a', UF_ADMIN    },
   { 'i', UF_INVIS    },
@@ -184,7 +184,7 @@ static bool extgecos_match(const char *mask, user_t *u)
 	return !match(mask, hostgbuf) || !match(mask, realgbuf);
 }
 
-static mowgli_node_t *sircd_next_matching_ban(channel_t *c, user_t *u, int type, mowgli_node_t *first)
+static mowgli_node_t *aspircd_next_matching_ban(channel_t *c, user_t *u, int type, mowgli_node_t *first)
 {
 	chanban_t *cb;
 	mowgli_node_t *n;
@@ -276,17 +276,17 @@ static mowgli_node_t *sircd_next_matching_ban(channel_t *c, user_t *u, int type,
 	return NULL;
 }
 
-static bool sircd_is_valid_host(const char *host)
+static bool aspircd_is_valid_host(const char *host)
 {
 	return true;
 }
 
-static void sircd_notice_channel_sts(user_t *from, channel_t *target, const char *text)
+static void aspircd_notice_channel_sts(user_t *from, channel_t *target, const char *text)
 {
 	sts(":%s NOTICE %s :%s", from ? CLIENT_NAME(from) : ME, target->name, text);
 }
 
-static bool sircd_is_extban(const char *mask)
+static bool aspircd_is_extban(const char *mask)
 {
 	const char without_param[] = "oza";
         const char with_param[] = "ajcxr";
@@ -312,20 +312,20 @@ void _modinit(module_t * m)
 {
 	MODULE_TRY_REQUEST_DEPENDENCY(m, "protocol/ts6-generic");
 
-	notice_channel_sts = &sircd_notice_channel_sts;
+	notice_channel_sts = &aspircd_notice_channel_sts;
 
-	next_matching_ban = &sircd_next_matching_ban;
-	is_valid_host = &sircd_is_valid_host;
-	is_extban = &sircd_is_extban;
+	next_matching_ban = &aspircd_next_matching_ban;
+	is_valid_host = &aspircd_is_valid_host;
+	is_extban = &aspircd_is_extban;
 
-	mode_list = sircd_mode_list;
-	ignore_mode_list = sircd_ignore_mode_list;
-	status_mode_list = sircd_status_mode_list;
-	prefix_mode_list = sircd_prefix_mode_list;
-	user_mode_list = sircd_user_mode_list;
-	ignore_mode_list_size = ARRAY_SIZE(sircd_ignore_mode_list);
+	mode_list = aspircd_mode_list;
+	ignore_mode_list = aspircd_ignore_mode_list;
+	status_mode_list = aspircd_status_mode_list;
+	prefix_mode_list = aspircd_prefix_mode_list;
+	user_mode_list = aspircd_user_mode_list;
+	ignore_mode_list_size = ARRAY_SIZE(aspircd_ignore_mode_list);
 
-	ircd = &sircd;
+	ircd = &aspircd;
 
 	m->mflags = MODTYPE_CORE;
 
