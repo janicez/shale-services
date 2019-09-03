@@ -30,13 +30,13 @@ ircd_t Chatd = {
 	.owner_mode = 0,
 	.protect_mode = 0,
 	.halfops_mode = 0,
-	.owner_mchar = "+w",
+	.owner_mchar = "+q",
 	.protect_mchar = "+a",
 	.halfops_mchar = "+h",
 	.type = PROTOCOL_CHARYBDIS,
 	.perm_mode = CMODE_PERM,
 	.oimmune_mode = CMODE_IMMUNE,
-	.ban_like_modes = "beIq",
+	.ban_like_modes = "beIy",
 	.except_mchar = 'e',
 	.invex_mchar = 'I',
 	.flags = IRCD_CIDR_BANS | IRCD_HOLDNICK | IRCD_TOPIC_NOCOLOUR,
@@ -71,8 +71,8 @@ struct cmode_ chatd_mode_list[] = {
 };
 
 struct cmode_ chatd_status_mode_list[] = {
-  { 'W', CSTATUS_IMMUNE	 },
-  { 'w', CSTATUS_OWNER	 },
+  { 'B', CSTATUS_IMMUNE	 },
+  { 'q', CSTATUS_OWNER	 },
   { 'a', CSTATUS_PROTECT },
   { 'o', CSTATUS_OP	 },
   { 'h', CSTATUS_HALFOP  },

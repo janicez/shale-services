@@ -10,6 +10,7 @@ MODULE = chanserv
 
 SRCS =			\
 	main.c	\
+	aspircdquiet.c   \
 	access.c \
 	akick.c	\
 	antiflood.c	\
@@ -76,7 +77,7 @@ SRCS =			\
 	status.c	\
 	suspend.c	\
 	sync.c		\
-        syntaxquiet.c   \
+	aspircdquiet.c   \
 	taxonomy.c	\
 	template.c	\
 	topic.c	\

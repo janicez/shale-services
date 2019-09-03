@@ -50,11 +50,11 @@
  * available.
  *
  * Asuka 1.2.1 or later                         modules/protocol/asuka
+ * AspIRCd 5.0.9 or later                       modules/protocol/aspircd
  * Bahamut 1.8.x                                modules/protocol/bahamut
  * Charybdis IRCd                               modules/protocol/charybdis
  * DreamForge 4.6.7 or later                    modules/protocol/dreamforge
  * Hybrid 7.1.2 and later                       modules/protocol/hybrid
- * InspIRCd 1.2 [DEPRECATED]                    modules/protocol/inspircd
  * InspIRCd 2.0                                 modules/protocol/inspircd
  * aspIRCd 5.0.1 or later                       modules/protocol/aspircd
  * ircd-ratbox 2.0 and later                    modules/protocol/ratbox
@@ -69,11 +69,14 @@
  *
  * If your IRCd vendor has supplied a module file, build it and load it here
  * instead of one above.
+ *
+ * The vendor of this services package is also the vendor of aspIRCd; for
+ * this reason, the example loadmodule line reflects the likely typical
+ * user of Aspire-flavored Shale.
  */
- * The default module to be loaded here is for aspIRCd , dont forget to uncomment the line below.
 #loadmodule "modules/protocol/aspircd";
 
-/* Protocol mixins.
+/* Protocol blackouts.
  *
  * These should be used if you do not have/want certain features on your
  * network that your ircd normally has. If you do not know what this means,
@@ -314,7 +317,7 @@ loadmodule "modules/nickserv/vhost";
  * OWNER/DEOWNER commands                       modules/chanserv/owner
  * PROTECT/DEPROTECT commands                   modules/chanserv/protect
  * QUIET command (+q support)                   modules/chanserv/quiet
- * QUIET command (+y support) syntaxIRCd only   modules/chanserv/syntaxquiet
+ * QUIET command, Aspire and similar (+y)       modules/chanserv/aspircdquiet
  * Channel takeover recovery (RECOVER command)  modules/chanserv/recover
  * REGISTER command                             modules/chanserv/register
  * SET command core                             modules/chanserv/set_core
@@ -389,7 +392,7 @@ loadmodule "modules/chanserv/op";
 #loadmodule "modules/chanserv/owner";
 #loadmodule "modules/chanserv/protect";
 #loadmodule "modules/chanserv/quiet";
-#loadmodule "modules/chanserv/syntaxquiet";
+#loadmodule "modules/chanserv/aspircdquiet";
 loadmodule "modules/chanserv/recover";
 loadmodule "modules/chanserv/register";
 loadmodule "modules/chanserv/set_core";
